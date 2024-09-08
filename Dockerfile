@@ -1,28 +1,30 @@
-#Base Image node:18.17.1-alpine
-FROM node:18.17.1-alpine
+FROM amazonlinux:2
 
+ARG version=17.0.12.7-1
 
-#Set working directory to /app
-WORKDIR /app
+RUN set -eux \
+    && export resouce_version=$(echo $version | tr '-' '.') \
+    && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-amazon-linux-2 \
+    && echo "localpkg_gpgcheck=1" >> /etc/yum.conf \
+    && CORRETO_TEMP=$(mktemp -d) \
+    && pushd ${CORRETO_TEMP} \
+    && RPM_LIST=("java-17-amazon-corretto-headless-$version.amzn2.1.$(uname -m).rpm" "java-17-amazon-corretto-$version.amzn2.1.$(uname -m).rpm") \
+    && for rpm in ${RPM_LIST[@]}; do \
+    curl --fail -O https://corretto.aws/downloads/resources/${resouce_version}/${rpm} \
+    && rpm -K "${CORRETO_TEMP}/${rpm}" | grep -F "${CORRETO_TEMP}/${rpm}: rsa sha1 (md5) pgp md5 OK" || exit 1 \
+    && yum install -y $(yum deplist "${CORRETO_TEMP}/${rpm}" |grep provider | grep -vE "log4j-cve|corretto" | tr -s ' ' |cut -d ' ' -f 3 ); \
+    done \
+    && rpm -i --nodeps ${CORRETO_TEMP}/*.rpm \
+    && popd \
+    && (find /usr/lib/jvm/java-17-amazon-corretto.$(uname -m) -name src.zip -delete || true) \
+    && rm -rf ${CORRETO_TEMP} \
+    && yum clean all \
+    && rm -rf /var/cache/yum \
+    && sed -i '/localpkg_gpgcheck=1/d' /etc/yum.conf
 
+ENV LANG C.UTF-8
+ENV JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
 
-#Set PATH /app/node_modules/.bin
-ENV PATH /app/node_modules/.bin:$PATH
-
-
-#Copy package.json in the image
-COPY package.json ./
-
-
-#Run npm install command
-RUN npm install
-
-
-#Copy the app
-COPY . ./
-
-#Expose port 3000
+COPY  /target/springbootapp.jar springbootapp.jar
 EXPOSE 3000
-
-#Start the app
-CMD ["node", "./src/server.js"]
+ENTRYPOINT ["java", "-jar", "springbootapp.jar"]

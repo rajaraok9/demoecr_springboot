@@ -25,6 +25,6 @@ RUN set -eux \
 ENV LANG C.UTF-8
 ENV JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
 
-COPY  /target/springbootapp.jar springbootapp.jar
+ADD  /target/springbootapp.jar springbootapp.jar
 EXPOSE 3000
 ENTRYPOINT ["java", "-jar", "springbootapp.jar"]

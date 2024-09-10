@@ -1,7 +1,8 @@
 FROM maven:3.9.9-amazoncorretto-17 AS build
-COPY pom.xml /target/
-COPY src /target/src
-RUN mvn -f /target/pom.xml clean package
+WORKDIR /app
+COPY pom.xml /app/
+COPY src /app/src
+RUN mvn -f /app/pom.xml clean package
 
 
 FROM amazonlinux:2
@@ -31,6 +32,6 @@ RUN set -eux \
 ENV LANG C.UTF-8
 ENV JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
 
-COPY  /target/springbootapp.jar springbootapp.jar
+COPY  /app/springbootapp.jar springbootapp.jar
 EXPOSE 3000
 ENTRYPOINT ["java", "-jar", "springbootapp.jar"]

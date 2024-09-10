@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.modmed</groupId>
-    <artifactId>demoecr_springboot</artifactId>
+    <artifactId>springbootapp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demoecr_springboot</name>
     <description>demoecr_springboot</description>

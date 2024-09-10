@@ -1,3 +1,9 @@
+FROM maven:3.6.0-jdk-17 AS build
+COPY pom.xml /target/
+COPY src /target/src
+RUN mvn -f /target/pom.xml clean package
+
+
 FROM amazonlinux:2
 
 ARG version=17.0.12.7-1

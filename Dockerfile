@@ -1,4 +1,4 @@
-FROM maven:3.6.0-jdk-17 AS build
+FROM maven:3.9.9-amazoncorretto-17 AS build
 COPY pom.xml /target/
 COPY src /target/src
 RUN mvn -f /target/pom.xml clean package

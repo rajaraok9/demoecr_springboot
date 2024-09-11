@@ -1,8 +1,8 @@
-FROM maven:3.9.9-amazoncorretto-17 AS build
-WORKDIR /app
-COPY pom.xml /app/
-COPY src /app/src
-RUN mvn -f /app/pom.xml clean package
+#FROM maven:3.9.9-amazoncorretto-17 AS build
+#WORKDIR /app
+#COPY pom.xml /app/
+#COPY src /app/src
+#RUN mvn -f /app/pom.xml clean package
 
 
 FROM amazonlinux:2

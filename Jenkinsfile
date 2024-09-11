@@ -31,7 +31,7 @@ pipeline {
     // Run container locally and perform tests
     stage('Running tests') {
       steps{
-        sh 'docker run -i --rm --name "${TEST_CONTAINER_NAME}" "${IMAGE_REPO_NAME}:${IMAGE_TAG}"'
+        sh 'docker run -i -d --rm --name "${TEST_CONTAINER_NAME}" "${IMAGE_REPO_NAME}:${IMAGE_TAG}"'
       }
     }
 
